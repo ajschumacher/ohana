@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+
+
+
+<html>
+
+
+
+
+<head>
+
+
+
+<title>ohana</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+<link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon" />
+<link rel="apple-touch-icon" href="/static/favicon-big.jpg" />
+
+<style>
+#login, #home, #options, #credit_card {
+    background-color: #b32d00 !important;
+}
+#credit_card_content {
+    background-color: #f9f9f9;
+}
+.full-width-slider input {
+    display: none;
+}
+.full-width-slider .ui-slider-track {
+    margin-left: 15px;
+}
+</style>
+
+<!-- <script src="/static/ohana.js"></script> -->
+<script type="text/javascript">
+
+$( document ).ready(function() {
+    app_setup();
+});
+
+function app_setup() {
+    login_setup();
+    login_submit_setup();
+    active_nav_setup();
+    $( "#home" ).on( "pagebeforeshow", function( event ) {
+        $('#home .ui-slider-handle').remove();
+    });
+    <!-- $.event.special.tap.emitTapOnTaphold = false; -->
+    $( "#buy_food" ).bind("click", function(event) {
+        event.preventDefault();
+        $.mobile.changePage("#credit_card", {transition: "pop", role: "dialog"});
+        <!-- console.log("bought"); -->
+        dollars = $( "#food_money" ).val();
+        new_dollars = dollars - 220;
+        setTimeout(function() {
+            $( "#food_money" ).val(new_dollars).slider("refresh");
+            $( "#food_dollar_text" ).text(new_dollars);
+        }, 8000);
+        <!-- window.location.href = "#credit_card"; -->
+    });
+}
+
+function login_setup() {
+    $( "#username" ).focus();
+    // If attempting to load page without being logged in,
+    // redirect to login page.
+    var username = $("#username").val();
+    if (!username) {
+        url_parts = window.location.href.split("#");
+        if (url_parts.length > 1) {
+            window.location.href = url_parts[0];
+        };
+    };
+}
+
+function login_submit_setup() {
+    // Log in, but only if there's a username.
+    $( "#login_form" ).submit(function( event ) {
+        event.preventDefault();
+        username = $("#username").val();
+        if (username) {
+            if (username === "Quinn") {
+                $( "#box_gifts" ).hide();
+                $( "#box_transportation" ).hide();
+                $( "#box_allowance" ).show();
+                $( "#space_allowance" ).show();
+            } else {
+                $( "#box_gifts" ).show();
+                $( "#box_transportation" ).show();
+                $( "#box_allowance" ).hide();
+                $( "#space_allowance" ).hide();
+            };
+            window.location.href="#home";
+            $( "[data-role='header']" ).toolbar({ theme: "a" });
+        } else {
+            $( "#username" ).focus();
+        }
+    });
+}
+
+function active_nav_setup() {
+    $( document ).on( "pagecontainerchange", function() {
+        var current = $( ".ui-page-active" ).jqmData( "title" );
+        if (current === "credit_card") { return; };
+        $( "[data-role='navbar'] a.ui-btn-active" ).removeClass( "ui-btn-active" );
+        $( "[data-role='navbar'] a" ).each(function() {
+            if ( $( this ).text() === current ) {
+                $( this ).addClass( "ui-btn-active" );
+            };
+        });
+    });
+}
+
+</script>
+
+
+
+</head>
+
+
+
+
+<body>
+
+
+
+<div data-role="header" data-position="fixed">
+<div data-role="navbar" data-iconpos="left">
+<ul>
+<li><a href="#login" data-icon="user">user</a></li>
+<li><a href="#home" data-icon="home" class="ui-btn-active">ohana</a></li>
+<li><a href="#options" data-icon="gear">options</a></li>
+</ul>
+</div><!-- /navbar -->
+</div><!-- /header -->
+
+
+
+<div data-role="page" data-title="user" id="login">
+<div role="main" class="ui-content">
+<div class="ui-body ui-body-a ui-corner-all">
+
+<img src="static/capone.png" align="right" />
+
+<h1>ohana</h1>
+
+<form id="login_form" action="post">
+
+<label for="username">username:</label>
+<input type="text" data-clear-btn="true" name="username" id="username" value="">
+
+<label for="password">password:</label>
+<input type="password"name="password" id="password" value="" autocomplete="off" data-clear-btn="true">
+
+<input type="submit" value="log in" id="login_button">
+
+</form>
+
+</div><!-- /ui-body -->
+</div><!-- /ui-content-->
+</div><!-- /page login -->
+
+
+<div data-role="page" data-title="ohana" id="home">
+<div role="main" class="ui-content">
+
+<!-- <h1>Use your card wisely!</h1> -->
+
+<div class="ui-body ui-body-a ui-corner-all">
+<p style="margin-bottom: 0;margin-top: 0.5em;" align="center">$<span id="food_dollar_text">321</span> of $400 dollars remain for November</p>
+<form class="full-width-slider">
+<input id="food_money" class="progress" type="range" name="slider-2" id="slider-2" data-highlight="true" min="0" max="400" value="321">
+</form>
+<a href="#credit_card" id="buy_food" class="ui-btn" data-rel="dialog">food</a>
+</div><!-- /ui-body -->
+
+<p></p>
+
+<div id="box_allowance" class="ui-body ui-body-a ui-corner-all">
+<p style="margin-bottom: 0;margin-top: 0.5em;" align="center">$90 of $100 dollars remain for November</p>
+<form class="full-width-slider">
+<input class="progress" type="range" name="slider-2" id="slider-2" data-highlight="true" min="0" max="100" value="90">
+</form>
+<a href="#credit_card" class="ui-btn" data-rel="dialog">allowance</a>
+</div><!-- /ui-body -->
+
+<p id="space_allowance"></p>
+
+<div id="box_transportation" class="ui-body ui-body-a ui-corner-all">
+<p style="margin-bottom: 0;margin-top: 0.5em;" align="center">$120 of $400 dollars remain for November</p>
+<form class="full-width-slider">
+<input class="progress" type="range" name="slider-2" id="slider-2" data-highlight="true" min="0" max="400" value="120">
+</form>
+<a href="#credit_card" class="ui-btn" data-rel="dialog">transportation</a>
+</div><!-- /ui-body -->
+
+<p></p>
+
+<div id="box_gifts" class="ui-body ui-body-a ui-corner-all">
+<a href="#credit_card" class="ui-btn" data-rel="dialog">gifts</a>
+</div><!-- /ui-body -->
+
+</div><!-- /ui-content -->
+</div><!-- /page home -->
+
+
+
+<div data-role="page" data-title="options" id="options">
+<div role="main" class="ui-content">
+
+<div class="ui-body ui-body-a ui-corner-all">
+<h3>ohana elders</h3>
+<form>
+<fieldset data-role="controlgroup">
+<label><input type="checkbox" name="checkbox0" checked>Aaron</label>
+<label><input type="checkbox" name="checkbox1" checked>Erica</label>
+<label><input type="checkbox" name="checkbox2">Quinn</label>
+</fieldset>
+</form>
+</div><!-- /ui-body -->
+
+<p></p>
+
+<div class="ui-body ui-body-a ui-corner-all">
+<h3>monthly credit budget</h3>
+<form>
+<input type="text" name="budget" value="$1200" />
+</form>
+</div><!-- /ui-body -->
+
+<p></p>
+
+<div class="ui-body ui-body-a ui-corner-all">
+<a href="#" class="ui-btn ui-icon-edit ui-btn-icon-right">food</a>
+<form>
+<input class="progress" type="range" name="slider-2" id="slider-2" data-highlight="true" min="0" max="1200" value="400">
+</form>
+<fieldset data-role="controlgroup">
+<label><input type="checkbox" data-mini="true" name="checkbox0" checked>Aaron</label>
+<label><input type="checkbox" data-mini="true" name="checkbox1" checked>Erica</label>
+<label><input type="checkbox" data-mini="true" name="checkbox2">Quinn</label>
+</fieldset>
+</div><!-- /ui-body -->
+
+<p></p>
+
+<div class="ui-body ui-body-a ui-corner-all">
+<a href="#" class="ui-btn ui-icon-edit ui-btn-icon-right">transportation</a>
+<form>
+<input class="progress" type="range" name="slider-2" id="slider-2" data-highlight="true" min="0" max="1200" value="400">
+</form>
+<fieldset data-role="controlgroup">
+<label><input type="checkbox" data-mini="true" name="checkbox0" checked>Aaron</label>
+<label><input type="checkbox" data-mini="true" name="checkbox1" checked>Erica</label>
+<label><input type="checkbox" data-mini="true" name="checkbox2">Quinn</label>
+</fieldset>
+</div><!-- /ui-body -->
+
+<p></p>
+
+<div class="ui-body ui-body-a ui-corner-all">
+<a href="#" class="ui-btn ui-icon-edit ui-btn-icon-right">gifts</a>
+<form>
+<input class="progress" type="range" name="slider-2" id="slider-2" data-highlight="true" min="0" max="1200" value="150">
+</form>
+<fieldset data-role="controlgroup">
+<label><input type="checkbox" data-mini="true" name="checkbox0" checked>Aaron</label>
+<label><input type="checkbox" data-mini="true" name="checkbox1" checked>Erica</label>
+<label><input type="checkbox" data-mini="true" name="checkbox2">Quinn</label>
+</fieldset>
+</div><!-- /ui-body -->
+
+<p></p>
+
+<div class="ui-body ui-body-a ui-corner-all">
+<a href="#" class="ui-btn ui-icon-edit ui-btn-icon-right">pet supplies</a>
+<form>
+<input class="progress" type="range" name="slider-2" id="slider-2" data-highlight="true" min="0" max="1200" value="150">
+</form>
+<fieldset data-role="controlgroup">
+<label><input type="checkbox" data-mini="true" name="checkbox0">Aaron</label>
+<label><input type="checkbox" data-mini="true" name="checkbox1" checked>Erica</label>
+<label><input type="checkbox" data-mini="true" name="checkbox2">Quinn</label>
+</fieldset>
+</div><!-- /ui-body -->
+
+<p></p>
+
+<div class="ui-body ui-body-a ui-corner-all">
+<a href="#" class="ui-btn ui-icon-edit ui-btn-icon-right">allowance</a>
+<form>
+<input class="progress" type="range" name="slider-2" id="slider-2" data-highlight="true" min="0" max="1200" value="100">
+</form>
+<fieldset data-role="controlgroup">
+<label><input type="checkbox" data-mini="true" name="checkbox0">Aaron</label>
+<label><input type="checkbox" data-mini="true" name="checkbox1">Erica</label>
+<label><input type="checkbox" data-mini="true" name="checkbox2" checked>Quinn</label>
+</fieldset>
+</div><!-- /ui-body -->
+
+<p></p>
+
+<div class="ui-body ui-body-a ui-corner-all">
+<a href="#" class="ui-btn">add new category</a>
+</div><!-- /ui-body -->
+
+</div><!-- /ui-content -->
+</div><!-- /page options -->
+
+
+
+<div data-role="page" data-title="credit_card" id="credit_card">
+<div id="credit_card_content" role="main" class="ui-content">
+
+<img src="static/card.png" style="width: 100%" alt="credit card" />
+
+<p><a href="#home" class="ui-btn">done</a></p>
+
+</div><!-- /ui-content -->
+</div><!-- /page credit_card -->
+
+
+
+</body>
+
+
+
+
+</html>
