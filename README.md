@@ -2,7 +2,7 @@
 
 _This is not a Capital One repository. Capital One logos are used imaginatively as this was created as part of a Capital One hackathon._
 
-As part of the Capital One [Code <FAM> hackathon](http://capitalone.hackathon.com/) (November 4-5, 2017) I put together this little app prototype/mockup/demo/call-it-what-you-will.
+As part of the Capital One [Code &lt;FAM&gt; hackathon](http://capitalone.hackathon.com/) (November 4-5, 2017) I put together this little app prototype/mockup/demo/call-it-what-you-will.
 
 The idea is that it's a bad idea for your credit card to work all the time; really it should have a second factor of authentication. Imagine that your card always gets denied, by default, except when you open an app on your phone and indicate that you want to use your card. Then you can make a transaction, and it will work, and then your card goes back into its default locked-down state.
 
